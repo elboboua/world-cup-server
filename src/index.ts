@@ -25,14 +25,14 @@ app.get("/get-matches", (req, res) => {
 
     // check if nation is valid
     if (nation && !nations.includes(nation)) {
-        res.status(400).json({
+        return res.status(400).json({
             error: "Please provide a valid nation",
             nations: nations,
         });
     }
     // check if year is valid
     if (year && !years.includes(parseInt(year as string))) {
-        res.status(400).json({
+        return res.status(400).json({
             error: "Please provide a valid worldcup year",
             years: years,
         });
@@ -45,9 +45,11 @@ app.get("/get-matches", (req, res) => {
                 (match.home_team_name.toLowerCase() === nation.toLowerCase() ||
                     match.away_team_name.toLowerCase() === nation.toLowerCase())
         );
-        res.json(matches);
+        return res.json(matches);
     } else {
-        res.status(400).json({ error: "Please provide a nation and a year" });
+        return res
+            .status(400)
+            .json({ error: "Please provide a nation and a year" });
     }
 });
 
@@ -57,7 +59,7 @@ app.get("/get-winner", (req, res) => {
     if (year && parseInt(year as string)) {
         // check if year is valid
         if (!years.includes(parseInt(year as string))) {
-            res.status(400).json({
+            return res.status(400).json({
                 error: "Please provide a valid worldcup year",
                 years: years,
             });
@@ -66,15 +68,15 @@ app.get("/get-winner", (req, res) => {
         const winner = worldCupData.tournaments.filter(
             (tournament: any) => tournament.year === parseInt(year as string)
         );
-        res.json(winner[0]);
+        return res.json(winner[0]);
     }
 
-    res.status(400).json({ error: "Please provide a year" });
+    return res.status(400).json({ error: "Please provide a year" });
 });
 
 // 404 Error
 app.use((_req, res) => {
-    res.status(404).json({ error: "Not found" });
+    return res.status(404).json({ error: "Not found" });
 });
 
 app.listen(port, () => {
